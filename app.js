@@ -1,6 +1,10 @@
 if (process.env.NODE_ENV !== 'production') {
     require('dotenv').load(); //in non-production environment, a.k.a. locally, load environmental variables from .env file
 }
+//open database connection
+require('./db/db');
+
+
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
@@ -10,8 +14,7 @@ var logger = require('morgan');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
-//open database connection
-require('./db/db');
+
 
 
 var app = express();
