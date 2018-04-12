@@ -1,5 +1,5 @@
 if (process.env.NODE_ENV !== 'production') {
-    require('dotenv').load();
+    require('dotenv').load(); //in non-production environment, a.k.a. locally, load environmental variables from .env file
 }
 var createError = require('http-errors');
 var express = require('express');
