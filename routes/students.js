@@ -34,4 +34,29 @@ router.get('/:id', function (req, res, next) {
     });
 })
 
+/**
+ * Create a new student
+ */
+router.post('/', function (req, res) {
+    student.create({
+            name : req.body.name,
+            phone : req.body.phone,
+            address : req.body.address
+        },
+        function (err, student) {
+            if (err) next(err.message);
+            else res.status(200).send(student);
+        });
+});
+
+/**
+ * Delete a student with given id from database
+ */
+router.delete('/:id', function (req, res) {
+    student.findByIdAndRemove(req.params.id, function (err, student) {
+        if (err) next(err.message);
+        else res.status(200).send("Student "+ student.name +" was deleted.");
+    });
+});
+
 module.exports = router;
