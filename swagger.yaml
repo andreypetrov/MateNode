@@ -7,11 +7,11 @@ host: "agentmate.herokuapp.com"
 basePath: "/api/v1"
 tags:
 - name: "students"
-  description: "Everything about students"
+  description: "students"
 - name: "exams"
-  description: "Everything about exam question sheets"
+  description: "exam question sheets"
 - name: "results"
-  description: "Everything about exam results of students who have taken exams"
+  description: "submitting and reading exam results of students"
 schemes:
 - "https"
 paths:
