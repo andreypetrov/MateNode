@@ -12,12 +12,12 @@ var answerSchema = new mongoose.Schema({
 var questionSchema = new mongoose.Schema({
     text: String,
     correctAnswer: String,
-    answers:[answerSchema],
-
+    answers:[answerSchema]
 });
 
 var examSchema = new mongoose.Schema({
-    name: String,
+    subjectCode: String,
+    subject:String,
     variant: String,
     map: {},
     questions:[questionSchema]

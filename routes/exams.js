@@ -8,31 +8,26 @@ router.use(bodyParser.urlencoded({extended: true}));
 router.use(bodyParser.json());
 
 
-/**
- *  GET all exams from database.
- */
-router.get('/', function (req, res, next) {
-    exam.find({}, function (err, exams) {
-        if (err) next(err.message);
-        else {
-            res.setHeader('Content-Type', 'application/json');
-            return res.status(200).send(exams);
-        }
-    });
-});
+var createDbQueryFromRequest = function (req) {
+    var query = {};
+    if (req.query.subjectCode) query.subjectCode = req.query.subjectCode;
+    if (req.query.variant) query.variant = req.query.variant;
+    return query;
+};
 
 /**
- * GET exam by name and variant
- * TODO make a query on name and variant (compound unique index)
+ * GET exams. Optionally filter by subjectCode and variant (compound unique index)
  */
-router.get('/:name/:variant', function (req, res, next) {
-    exam.find({}, function (err, exam) {
+router.get('/', function (req, res, next) {
+    var query = createDbQueryFromRequest(req);
+    exam.find(query, function (err, exam) {
         if (err) next(err.message);
         else {
             res.setHeader('Content-Type', 'application/json');
             return res.status(200).send(exam);
         }
     });
-})
+});
+
 
 module.exports = router;
