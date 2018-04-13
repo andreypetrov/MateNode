@@ -41,13 +41,17 @@ definitions:
         type: "string"
         format: "hexadecimal"
         description: "mLab generated mongodb field"
+        example: "12312d1231b"
       name:
         type: "string"
         format: "First Middle Last"
         description: "Full name of the student"
+        example: "Христо Евлогиев Георгиев"
       phone:
         type: "string"
+        example: "032/222222"
       address:
         type: "string"
+        example: "ул. Възрожденска 1А, Пловдив, 4000"
     xml:
       name: "Student"
