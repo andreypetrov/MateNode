@@ -7,16 +7,31 @@ var router = express.Router();
 router.use(bodyParser.urlencoded({extended: true}));
 router.use(bodyParser.json());
 
-/* GET all students from database. */
-router.get('/', function (req, res) {
+
+/**
+ *  GET all students from database.
+ */
+router.get('/', function (req, res, next) {
     student.find({}, function (err, students) {
-        if (err) {
-            return res.status(500).send("There was a problem finding the students");
-        } else {
+        if (err) next(err.message);
+        else {
             res.setHeader('Content-Type', 'application/json');
             return res.status(200).send(students);
         }
-    })
+    });
 });
+
+/**
+ * GET a student by id
+ */
+router.get('/:id', function (req, res, next) {
+    student.findById(req.params.id, function (err, student) {
+        if (err) next(err.message);
+        else {
+            res.setHeader('Content-Type', 'application/json');
+            return res.status(200).send(student);
+        }
+    });
+})
 
 module.exports = router;
