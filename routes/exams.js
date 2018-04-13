@@ -1,12 +1,8 @@
 
 var express = require('express');
-var bodyParser = require('body-parser');
 var exam = require('../model/exam');
 
 var router = express.Router();
-router.use(bodyParser.urlencoded({extended: true}));
-router.use(bodyParser.json());
-
 
 var createDbQueryFromRequest = function (req) {
     var query = {};

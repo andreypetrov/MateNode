@@ -1,11 +1,7 @@
 
 var express = require('express');
-var bodyParser = require('body-parser');
 var student = require('../model/student');
-
 var router = express.Router();
-router.use(bodyParser.urlencoded({extended: true}));
-router.use(bodyParser.json());
 
 
 /**
@@ -32,7 +28,7 @@ router.get('/:id', function (req, res, next) {
             return res.status(200).send(student);
         }
     });
-})
+});
 
 /**
  * Create a new student

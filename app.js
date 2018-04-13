@@ -1,20 +1,14 @@
 if (process.env.NODE_ENV !== 'production') {
     require('dotenv').load(); //in non-production environment, a.k.a. locally, load environmental variables from .env file
 }
+
 //open database connection
 require('./db/db');
 
-
-var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-
-var indexRouter = require('./routes/index');
-var studentsRouter = require('./routes/students');
-var examsRouter = require('./routes/exams');
-
 
 var app = express();
 
@@ -28,34 +22,20 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+
+var indexRouter = require('./routes/index');
+var studentsRouter = require('./routes/students');
+var examsRouter = require('./routes/exams');
+
 app.use('/', indexRouter);
 app.use('/api/v1/students', studentsRouter);
 app.use('/api/v1/exams', examsRouter);
 
 
-//Setup swagger
-var swaggerUi = require('swagger-ui-express');
-var YAML = require('yamljs');
-var swaggerDocument = YAML.load('./swagger.yaml');
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+setupSwagger = require('./util/swagger');
+setupSwagger(app);
 
-
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-    next(createError(404));
-});
-
-// error handler
-app.use(function(err, req, res) {
-    // set locals, only providing error in development
-    res.locals.message = err.message;
-    res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-    // render the error page
-    res.status(err.status || 500);
-    res.render('error');
-});
-
-
+handleErrors = require('./util/errors');
+handleErrors(app);
 
 module.exports = app;
