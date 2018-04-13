@@ -1,0 +1,57 @@
+swagger: "2.0"
+info:
+  version: "1.0.0"
+  title: "Mate Exam API"
+  description: "A simple API to give test exams to students"
+host: "agentmate.herokuapp.com"
+basePath: "/api/v1"
+tags:
+- name: "students"
+  description: "Everything about students"
+- name: "exams"
+  description: "Everything about exam question sheets"
+- name: "results"
+  description: "Everything about exam results of students who have taken exams"
+schemes:
+- "https"
+paths:
+  /students:
+    get:
+      tags:
+      - "students"
+      summary: "Get list of all students"
+      operationId: "getStudents"
+      produces:
+      - "application/json"
+      parameters: []
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Student"
+        500:
+          description: "Database error message"
+definitions:
+ Student:
+    type: "object"
+    properties:
+      _id:
+        type: "string"
+        format: "hexadecimal"
+        description: "mLab generated mongodb field"
+        example: "12312d1231b"
+      name:
+        type: "string"
+        format: "First Middle Last"
+        description: "Full name of the student"
+        example: "Христо Евлогиев Георгиев"
+      phone:
+        type: "string"
+        example: "032/222222"
+      address:
+        type: "string"
+        example: "ул. Възрожденска 1А, Пловдив, 4000"
+    xml:
+      name: "Student"
