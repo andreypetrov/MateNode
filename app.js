@@ -29,8 +29,15 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-app.use('/students', studentsRouter);
-app.use('/exams', examsRouter);
+app.use('/api/v1/students', studentsRouter);
+app.use('/api/v1/exams', examsRouter);
+
+
+//Setup swagger
+var swaggerUi = require('swagger-ui-express'),
+    swaggerDocument = require('./swagger.json');
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -47,5 +54,7 @@ app.use(function(err, req, res) {
     res.status(err.status || 500);
     res.render('error');
 });
+
+
 
 module.exports = app;
