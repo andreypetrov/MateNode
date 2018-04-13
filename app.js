@@ -35,7 +35,7 @@ app.use('/api/v1/exams', examsRouter);
 
 //Setup swagger
 var swaggerUi = require('swagger-ui-express'),
-    swaggerDocument = require('./swagger.json');
+    swaggerDocument = require('./swagger.yaml');
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 
