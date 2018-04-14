@@ -52,21 +52,21 @@ const createDbQueryFromRequest = function (req) {
 
     //primary
     if (req.query.studentId) {
-        query['Student._id'] = req.query.studentId;
+        query['student._id'] = req.query.studentId;
     }
     if (req.query.examId) {
-        query['Exam._id'] = req.query.examId;
+        query['exam._id'] = req.query.examId;
     }
 
     //secondary
     if (req.query.studentName) {
-        query['Student.name'] = req.query.studentName;
+        query['student.name'] = req.query.studentName;
     }
     if (req.query.examSubjectCode) {
-        query['Exam.subjectCode'] = req.query.examSubjectCode;
+        query['exam.subjectCode'] = req.query.examSubjectCode;
     }
     if (req.query.examVariant) {
-        query['Exam.variant'] = req.query.examVariant;
+        query['exam.variant'] = req.query.examVariant;
     }
     return query;
 };
@@ -109,26 +109,22 @@ router.post('/finish', function (req, res, next) {
  * finish an exam result. Calculate the final score of the student and timestamp the end of it.
  */
 router.post('/answer', function (req, res, next) {
-    let conditions = {
-        "_id": req.body.resultId,
-        "questions._id": req.body.questionId
-    };
+    let query = {};
+    query['_id'] = req.body.resultId;
+    query['questions._id'] = req.body.questionId;
+
     let update = {
         "$set": {"questions.$.givenAnswer": req.body.answerId}
     };
 
-    // var conditions = {"_id": req.body.resultId}
-    // var update= {
-    //     $set: {"questions.$[question].givenAnswer" : req.body.answerId}
-    // }
-    //
-    // var options = {
-    //     arrayFilters: [{"question": req.body.questionId}]
-    // }
-
-    Result.findOneAndUpdate(conditions, update).then(function (updatedResult) {
-        return res.status(200).send(updatedResult);
+    //TODO figure out why the query finds 0 records
+    Result.update(query, update).then(function (result) {
+        return res.status(200).send(result);
     }).catch(next);
+
+    // Result.findOneAndUpdate(conditions, update).then(function (updatedResult) {
+    //     return res.status(200).send(updatedResult);
+    // }).catch(next);
 });
 
 
