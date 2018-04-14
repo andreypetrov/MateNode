@@ -108,7 +108,6 @@ router.post('/finish', function (req, res, next) {
 /**
  * finish an exam result. Calculate the final score of the student and timestamp the end of it.
  */
-
 router.post('/answer', function (req, res, next) {
     Result.findById(req.body.resultId).then(function (result) {
         result.questions.id(req.body.questionId).givenAnswer = req.body.answerId;
@@ -117,27 +116,6 @@ router.post('/answer', function (req, res, next) {
         return res.status(200).send(result);
     }).catch(next);
 });
-
-// router.post('/answer', function (req, res, next) {
-//     let query = {};
-//     query['_id'] = req.body.resultId;
-//     query['questions._id'] = req.body.questionId;
-//
-//     let update = {
-//         "$set": {"questions.$.givenAnswer": req.body.answerId}
-//     };
-//
-//     //TODO figure out why the query finds 0 records,
-//
-//     // Result.update(query, update).then(function (result) {
-//     //     return res.status(200).send(result);
-//     // }).catch(next);
-//
-//     // Result.findOneAndUpdate(conditions, update).then(function (updatedResult) {
-//     //     return res.status(200).send(updatedResult);
-//     // }).catch(next);
-// });
-
 
 /**
  * Score in the format "X out of Y", where X is the number of correct answers and Y is the number of questions answered.
