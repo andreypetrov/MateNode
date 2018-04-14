@@ -1,15 +1,10 @@
+const express = require('express');
+const Exam = require('../model/exam');
 
-var express = require('express');
-var bodyParser = require('body-parser');
-var exam = require('../model/exam');
+const router = express.Router();
 
-var router = express.Router();
-router.use(bodyParser.urlencoded({extended: true}));
-router.use(bodyParser.json());
-
-
-var createDbQueryFromRequest = function (req) {
-    var query = {};
+const createDbQueryFromRequest = function (req) {
+    let query = {};
     if (req.query.subjectCode) query.subjectCode = req.query.subjectCode;
     if (req.query.variant) query.variant = req.query.variant;
     return query;
@@ -19,15 +14,28 @@ var createDbQueryFromRequest = function (req) {
  * GET exams. Optionally filter by subjectCode and variant (compound unique index)
  */
 router.get('/', function (req, res, next) {
-    var query = createDbQueryFromRequest(req);
-    exam.find(query, function (err, exam) {
-        if (err) next(err.message);
-        else {
-            res.setHeader('Content-Type', 'application/json');
-            return res.status(200).send(exam);
-        }
-    });
+    Exam.find(createDbQueryFromRequest(req)).then(function (exam) {
+        return res.status(200).send(exam);
+    }).catch(next);
 });
 
+
+/**
+ * Create a new exam
+ */
+router.post('/', function (req, res, next) {
+    Exam.create(req.body).then(function (exam) {
+        res.status(200).send(exam);
+    }).catch(next);
+});
+
+/**
+ * Delete an exam with given id from database
+ */
+router.delete('/:id', function (req, res, next) {
+    Exam.findByIdAndRemove(req.params.id).then(function (exam) {
+        res.status(200).json("Exam was deleted.");
+    }).catch(next);
+});
 
 module.exports = router;

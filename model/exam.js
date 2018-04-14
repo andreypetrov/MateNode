@@ -1,26 +1,29 @@
-var mongoose = require('mongoose');
+const mongoose = require('mongoose');
 
 // var mapSchema = new mongoose.Schema({
 //
 // });
 
-var answerSchema = new mongoose.Schema({
+const answerSchema = new mongoose.Schema({
     _id: String,
     text: String
 });
 
-var questionSchema = new mongoose.Schema({
+const questionSchema = new mongoose.Schema({
+    _id: String,
     text: String,
     correctAnswer: String,
     answers:[answerSchema]
 });
 
-var examSchema = new mongoose.Schema({
+const examSchema = new mongoose.Schema({
+    //_id: mongoose.Schema.Types.ObjectId,
     subjectCode: String,
     subject:String,
     variant: String,
     map: {},
-    questions:[questionSchema]
+    questions:[questionSchema],
+    student:String
 });
 
 
