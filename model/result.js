@@ -1,13 +1,14 @@
-var mongoose = require('mongoose');
-var student = require('../model/student');
-var exam = require('../model/exam');
+const mongoose = require('mongoose');
+const student = require('../model/student');
+const exam = require('../model/exam');
 
-var answerSchema = new mongoose.Schema({
+const answerSchema = new mongoose.Schema({
     _id: String,
     text: String
 });
 
-var questionSchema = new mongoose.Schema({
+const questionSchema = new mongoose.Schema({
+    _id: String,
     text: String,
     correctAnswer: String,
     answers:[answerSchema],
@@ -16,7 +17,8 @@ var questionSchema = new mongoose.Schema({
     givenAnswer:String
 });
 
-var resultSchema = new mongoose.Schema({
+const resultSchema = new mongoose.Schema({
+    //_id: mongoose.Schema.Types.ObjectId,
     student: student.schema,
     exam: exam.schema,
     questions:[questionSchema],
