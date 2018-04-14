@@ -43,15 +43,11 @@ router.post('/', function (req, res, next) {
 
 });
 
-//every exam result is a created on the basis of the given student and exam
 var createResult = function(student, exam) {
     return {
-        subjectCode: exam.subjectCode,
-        subject:exam.subject,
-        variant:exam.variant,
-        map: exam.map,
-        questions:exam.questions,
         student: student,
+        exam: exam,
+        questions:exam.questions,
         dateStarted:Date.now()
     };
 };
@@ -77,6 +73,18 @@ router.get('/', function (req, res, next) {
             res.setHeader('Content-Type', 'application/json');
             return res.status(200).send(exam);
         }
+    });
+});
+
+
+/**
+ * Delete a result with given id from database. Needed for testing mostly
+ */
+router.delete('/:id', function (req, res) {
+    result.findByIdAndRemove(req.params.id, function (err, result) {
+        if (err) next(err.message);
+        if (!result) res.status(200).send("No such result");
+        else res.status(200).send("Result was deleted.");
     });
 });
 

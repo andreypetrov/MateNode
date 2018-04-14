@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
 var student = require('../model/student');
+var exam = require('../model/exam');
 
 var answerSchema = new mongoose.Schema({
     _id: String,
@@ -16,16 +17,12 @@ var questionSchema = new mongoose.Schema({
 });
 
 var resultSchema = new mongoose.Schema({
-    subjectCode: String,
-    subject:String,
-    variant: String,
-    map: {},
-    questions:[questionSchema],
-
-    //new fields
     student: student.schema,
+    exam: exam.schema,
+    questions:[questionSchema],
     dateStarted:Date,
-    dateFinished:Date
+    dateFinished:Date,
+    score:String
 });
 
 
