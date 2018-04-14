@@ -5,20 +5,6 @@ var exam = require('../model/exam');
 
 var router = express.Router();
 
-var createDbQueryFromRequest = function (req) {
-    var query = {};
-    if (req.query.subjectCode) query.subjectCode = req.query.subjectCode;
-    if (req.query.variant) query.variant = req.query.variant;
-    if (req.query.studentName) {
-        query['student.name'] = req.query.studentName;
-    }
-    if (req.query.studentId) {
-        query['student._id'] = req.query.studentId;
-    }
-    return query;
-};
-
-
 /**
  * Create a new result for a given student and a given exam (use studentId and examId)
  */
@@ -53,17 +39,8 @@ var createResult = function(student, exam) {
 };
 
 
-
-
-
-
-
-
-
-
-
 /**
- * GET results. Optionally filter by subjectCode, variant, studentName or studentId (compound unique index)
+ * GET results. Optionally filter by examId, studentId, studentName, examSubjectCode, examVariant
  */
 router.get('/', function (req, res, next) {
     var query = createDbQueryFromRequest(req);
@@ -75,6 +52,33 @@ router.get('/', function (req, res, next) {
         }
     });
 });
+
+var createDbQueryFromRequest = function (req) {
+    var query = {};
+
+    //primary
+    if (req.query.studentId) {
+        query['student._id'] = req.query.studentId;
+    }
+    if (req.query.examId) {
+        query['exam._id'] = req.query.examId;
+    }
+
+    //secondary
+    if (req.query.studentName) {
+        query['student.name'] = req.query.studentName;
+    }
+
+    if (req.query.examSubjectCode) {
+        query['exam.subjectCode'] = req.query.examSubjectCode;
+    }
+
+    if (req.query.examVariant){
+        query['exam.variant'] = req.query.examVariant;
+    }
+
+    return query;
+};
 
 
 /**
