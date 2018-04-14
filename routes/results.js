@@ -86,11 +86,10 @@ router.get('/:id', function (req, res, next) {
  */
 router.delete('/:id', function (req, res, next) {
     Result.findByIdAndRemove(req.params.id).then(function (result) {
-        if (!result) res.status(200).send("No such result");
-        else res.status(200).send("Result was deleted.");
+        if (!result) res.status(200).json("No such result");
+        else res.status(200).json("Result was deleted.");
     }).catch(next);
 });
-
 
 /**
  * finish an exam result. Calculate the final score of the student and timestamp the end of it.
@@ -106,7 +105,7 @@ router.post('/finish', function (req, res, next) {
 });
 
 /**
- * finish an exam result. Calculate the final score of the student and timestamp the end of it.
+ * answer an exam question by given resultId and questionId.
  */
 router.post('/answer', function (req, res, next) {
     Result.findById(req.body.resultId).then(function (result) {
