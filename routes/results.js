@@ -108,25 +108,35 @@ router.post('/finish', function (req, res, next) {
 /**
  * finish an exam result. Calculate the final score of the student and timestamp the end of it.
  */
+
 router.post('/answer', function (req, res, next) {
-    let query = {};
-    query['_id'] = req.body.resultId;
-    query['questions._id'] = req.body.questionId;
-
-    let update = {
-        "$set": {"questions.$.givenAnswer": req.body.answerId}
-    };
-
-    //TODO figure out why the query finds 0 records,
-    //could it be because of OjbectId vs String value of _id? Compare with queries in mLab console
-    Result.update(query, update).then(function (result) {
+    Result.findById(req.body.resultId).then(function (result) {
+        result.questions.id(req.body.questionId).givenAnswer = req.body.answerId;
+        return result.save();
+    }).then(function(result){
         return res.status(200).send(result);
     }).catch(next);
-
-    // Result.findOneAndUpdate(conditions, update).then(function (updatedResult) {
-    //     return res.status(200).send(updatedResult);
-    // }).catch(next);
 });
+
+// router.post('/answer', function (req, res, next) {
+//     let query = {};
+//     query['_id'] = req.body.resultId;
+//     query['questions._id'] = req.body.questionId;
+//
+//     let update = {
+//         "$set": {"questions.$.givenAnswer": req.body.answerId}
+//     };
+//
+//     //TODO figure out why the query finds 0 records,
+//
+//     // Result.update(query, update).then(function (result) {
+//     //     return res.status(200).send(result);
+//     // }).catch(next);
+//
+//     // Result.findOneAndUpdate(conditions, update).then(function (updatedResult) {
+//     //     return res.status(200).send(updatedResult);
+//     // }).catch(next);
+// });
 
 
 /**
