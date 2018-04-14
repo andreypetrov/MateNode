@@ -20,7 +20,7 @@ var createDbQueryFromRequest = function (req) {
 
 
 /**
- * Create a new result for given student and given exam (use studentId and examId)
+ * Create a new result for a given student and a given exam (use studentId and examId)
  */
 router.post('/', function (req, res, next) {
     if(!req.body.studentId || !req.body.examId) return res.status(400).send("Please provide studentId and examId");
@@ -43,6 +43,7 @@ router.post('/', function (req, res, next) {
 
 });
 
+//every exam result is a created on the basis of the given student and exam
 var createResult = function(student, exam) {
     return {
         subjectCode: exam.subjectCode,
@@ -56,8 +57,17 @@ var createResult = function(student, exam) {
 };
 
 
+
+
+
+
+
+
+
+
+
 /**
- * GET results. Optionally filter by subjectCode and variant (compound unique index)
+ * GET results. Optionally filter by subjectCode, variant, studentName or studentId (compound unique index)
  */
 router.get('/', function (req, res, next) {
     var query = createDbQueryFromRequest(req);
