@@ -26,11 +26,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 var indexRouter = require('./routes/index');
 var studentsRouter = require('./routes/students');
 var examsRouter = require('./routes/exams');
+var resultsRouter = require('./routes/results');
 
 app.use('/', indexRouter);
 app.use('/api/v1/students', studentsRouter);
 app.use('/api/v1/exams', examsRouter);
-
+app.use('/api/v1/results', resultsRouter);
 
 setupSwagger = require('./util/swagger');
 setupSwagger(app);

@@ -1,8 +1,5 @@
 var mongoose = require('mongoose');
-
-// var mapSchema = new mongoose.Schema({
-//
-// });
+var student = require('../model/student');
 
 var answerSchema = new mongoose.Schema({
     _id: String,
@@ -12,20 +9,27 @@ var answerSchema = new mongoose.Schema({
 var questionSchema = new mongoose.Schema({
     text: String,
     correctAnswer: String,
-    answers:[answerSchema]
+    answers:[answerSchema],
+
+    //new field
+    givenAnswer:String
 });
 
-var examSchema = new mongoose.Schema({
+var resultSchema = new mongoose.Schema({
     subjectCode: String,
     subject:String,
     variant: String,
     map: {},
     questions:[questionSchema],
-    student:String
+
+    //new fields
+    student: student.schema,
+    dateStarted:Date,
+    dateFinished:Date
 });
 
 
 
 
-mongoose.model('Exam', examSchema);
-module.exports = mongoose.model('Exam');
+mongoose.model('Result', resultSchema);
+module.exports = mongoose.model('Result');
