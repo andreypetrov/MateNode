@@ -117,7 +117,8 @@ router.post('/answer', function (req, res, next) {
         "$set": {"questions.$.givenAnswer": req.body.answerId}
     };
 
-    //TODO figure out why the query finds 0 records
+    //TODO figure out why the query finds 0 records,
+    //could it be because of OjbectId vs String value of _id? Compare with queries in mLab console
     Result.update(query, update).then(function (result) {
         return res.status(200).send(result);
     }).catch(next);
