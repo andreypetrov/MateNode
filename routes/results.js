@@ -22,6 +22,7 @@ router.post('/', function (req, res, next) {
     }).then(function(){
         return result.create(createResult(studentModel, examModel));
     }).then(function(result){
+        res.setHeader('Content-Type', 'application/json');
         return res.status(200).send(result);
     }).catch(function (err) {
         next(err.message);
@@ -68,18 +69,28 @@ var createDbQueryFromRequest = function (req) {
     if (req.query.studentName) {
         query['student.name'] = req.query.studentName;
     }
-
     if (req.query.examSubjectCode) {
         query['exam.subjectCode'] = req.query.examSubjectCode;
     }
-
     if (req.query.examVariant){
         query['exam.variant'] = req.query.examVariant;
     }
-
     return query;
 };
 
+
+/**
+ * GET a result by result id
+ */
+router.get('/:id', function (req, res, next) {
+    result.findById(req.params.id, function (err, result) {
+        if (err) next(err.message);
+        else {
+            res.setHeader('Content-Type', 'application/json');
+            return res.status(200).send(result);
+        }
+    });
+});
 
 /**
  * Delete a result with given id from database. Needed for testing mostly
