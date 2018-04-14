@@ -25,11 +25,7 @@ router.get('/:id', function (req, res, next) {
  * Create a new student
  */
 router.post('/', function (req, res, next) {
-    Student.create({
-        name: req.body.name,
-        phone: req.body.phone,
-        address: req.body.address
-    }).then(function (student) {
+    Student.create(req.body).then(function (student) {
         res.status(200).send(student);
     }).catch(next);
 });

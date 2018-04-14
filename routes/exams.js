@@ -20,4 +20,22 @@ router.get('/', function (req, res, next) {
 });
 
 
+/**
+ * Create a new exam
+ */
+router.post('/', function (req, res, next) {
+    Exam.create(req.body).then(function (exam) {
+        res.status(200).send(exam);
+    }).catch(next);
+});
+
+/**
+ * Delete an exam with given id from database
+ */
+router.delete('/:id', function (req, res, next) {
+    Exam.findByIdAndRemove(req.params.id).then(function (exam) {
+        res.status(200).json("Exam was deleted.");
+    }).catch(next);
+});
+
 module.exports = router;
