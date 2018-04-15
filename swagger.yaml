@@ -151,6 +151,36 @@ definitions:
     xml:
       name: "Exam"
 
+  Result:
+    type: "object"
+    properties:
+      _id:
+        type: "string"
+        format: "hexadecimal"
+        description: "mLab generated mongodb field"
+        example: "12312d1231e"
+        required: false
+      student:
+        $ref: "#/definitions/Student"
+      exam:
+        $ref: "#/definitions/Exam"
+      dateStarted:
+        type: "string"
+        format: "date-time"
+        description: "date-time in UTC/GMT at which the student started the exam i.e. the result document was created."
+        example: "2018-04-14T22:19:59.409Z"
+      dateFinished:
+        type: "string"
+        format: "date-time"
+        description: "date-time in UTC/GMT at which the student finished the exam i.e. the result document has been completed and final scoring has been calculated."
+        example: "2018-04-14T22:21:26.054Z"
+      questions:
+        type: "array"
+        items:
+          $ref: "#/definitions/Question"
+    xml:
+      name: "Result"
+
   Question:
     type: "object"
     properties:
