@@ -38,7 +38,6 @@ paths:
       operationId: "createStudent"
       consumes:
       - "application/json"
-      - "application/x-www-form-urlencoded"
       produces:
       - "application/json"
       parameters:
@@ -92,7 +91,92 @@ paths:
           description: "successful operation"
           schema:
             type: "string"
-
+  /exams:
+    get:
+     tags:
+     - "exams"
+     summary: "Get list of all exams"
+     operationId: "getExams"
+     produces:
+     - "application/json"
+     parameters:
+     - name: "subjectCode"
+       in: "query"
+       description: "The sunject code of the exam"
+       type: "string"
+       example: "01"
+     - name: "password"
+       in: "query"
+       description: "The password for login in clear text"
+       required: true
+       type: "string"
+     responses:
+       200:
+         description: "successful operation"
+         schema:
+           type: "array"
+           items:
+             $ref: "#/definitions/Exam"
+    post:
+     tags:
+     - "exams"
+     summary: "Create a new exam"
+     operationId: "createExam"
+     consumes:
+     - "application/json"
+     produces:
+     - "application/json"
+     parameters:
+     - name: "body"
+       in: "body"
+       description: "Exam object that needs to be created. _id does not need to be provided. If not provided it will be generated server side and returned in the response."
+       required: true
+       schema:
+         $ref: "#/definitions/Exam"
+     responses:
+           200:
+             description: "successful operation"
+             schema:
+               $ref: "#/definitions/Exam"
+  /exams/{id}:
+    get:
+      tags:
+      - "exams"
+      summary: "Get an exam by id"
+      operationId: "getExamById"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of exam to return"
+        required: true
+        type: "string"
+        format: "hexadecimal"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Exam"
+    delete:
+      tags:
+      - "exams"
+      summary: "Delete a exam by id"
+      operationId: "deleteExamById"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of exam to delete"
+        required: true
+        type: "string"
+        format: "hexadecimal"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "string"
 
 definitions:
   Student:
