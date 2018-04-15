@@ -19,11 +19,10 @@ const questionSchema = new mongoose.Schema({
 const examSchema = new mongoose.Schema({
     //_id: mongoose.Schema.Types.ObjectId,
     subjectCode: String,
-    subject:String,
+    subjectName:String,
     variant: String,
     map: {},
-    questions:[questionSchema],
-    student:String
+    questions:[questionSchema]
 });
 
 

@@ -31,6 +31,28 @@ paths:
             type: "array"
             items:
               $ref: "#/definitions/Student"
+    post:
+      tags:
+      - "students"
+      summary: "Create a new student"
+      operationId: "createStudent"
+      consumes:
+      - "application/json"
+      - "application/x-www-form-urlencoded"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "body"
+        in: "body"
+        description: "Student object that needs to be created. _id does not need to be provided. If not provided it will be generated server side and returned in the response."
+        required: true
+        schema:
+          $ref: "#/definitions/Student"
+      responses:
+            200:
+              description: "successful operation"
+              schema:
+                $ref: "#/definitions/Student"
   /students/{id}:
     get:
       tags:
@@ -44,19 +66,36 @@ paths:
         in: "path"
         description: "ID of student to return"
         required: true
-        type: "hexadecimal"
-    responses:
-      200:
-        description: "successful operation"
-        schema:
-          $ref: "#/definitions/Student"
-
-
-
+        type: "string"
+        format: "hexadecimal"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Student"
+    delete:
+      tags:
+      - "students"
+      summary: "Delete a student by id"
+      operationId: "deleteStudentById"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of student to delete"
+        required: true
+        type: "string"
+        format: "hexadecimal"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "string"
 
 
 definitions:
- Student:
+  Student:
     type: "object"
     properties:
       _id:
@@ -64,6 +103,7 @@ definitions:
         format: "hexadecimal"
         description: "mLab generated mongodb field"
         example: "12312d1231b"
+        required: false
       name:
         type: "string"
         format: "First Middle Last"
@@ -77,3 +117,78 @@ definitions:
         example: "ул. Възрожденска 1А, Пловдив, 4000"
     xml:
       name: "Student"
+
+  Exam:
+    type: "object"
+    properties:
+      _id:
+        type: "string"
+        format: "hexadecimal"
+        description: "mLab generated mongodb field"
+        example: "12312d1231a"
+        required: false
+      subjectCode:
+        type: "string"
+        format: "integer"
+        description: "short code of the studied subject"
+        example: "01"
+      subjectName:
+        type: "string"
+        description: "name of the studied subject"
+        example: "Правилник за движение по пътишата"
+      variant:
+        type: "string"
+        description: "A different exam variant usually means a different subset of questions or reordered questions. Test variants are used to reduce risk of cheating and to focus on specific subject areas"
+        example: "Б"
+      map:
+        type: "object"
+        description: "TODO description, for now empty object"
+        example: {}
+      questions:
+        type: "array"
+        items:
+          $ref: "#/definitions/Question"
+    xml:
+      name: "Exam"
+
+  Question:
+    type: "object"
+    properties:
+      _id:
+        type: "string"
+        format: "usually a number"
+        example: "1"
+        required: false
+      text:
+        type: "string"
+        description: "The text of the actual question"
+        example: "Колко е дълга река Нил?"
+      correctAnswer:
+        type: "string"
+        description: "The id (usually letter) of the correct answer"
+        example: "в"
+      givenAnswer:
+        type: "string"
+        description: "The id (usually letter) of the given answer by the student"
+        example: "г"
+      answers:
+        type: "array"
+        items:
+          $ref: "#/definitions/Answer"
+    xml:
+      name: "Question"
+
+  Answer:
+    type: "object"
+    properties:
+      _id:
+        type: "string"
+        format: "usually a letter"
+        example: "б"
+        required: false
+      text:
+        type: "string"
+        description: "The text of the answer"
+        example: "Река нил е 2000КМ"
+    xml:
+      name: "Answer"
