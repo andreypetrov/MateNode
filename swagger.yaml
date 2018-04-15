@@ -223,23 +223,19 @@ paths:
     post:
       tags:
       - "results"
-      summary: "Create a new result and timestamp the moment it started"
+      summary: "Create a new result and timestamp the moment the exam started"
       operationId: "createResult"
       consumes:
       - "application/json"
       produces:
       - "application/json"
       parameters:
-      - name: "studentId"
+      - name: "body"
         in: "body"
-        description: "id of the student who starts the exam"
+        description: "id of student and id of exam"
         required: true
-        example: "5ad289124c9956964c868f2b"
-      - name: "examId"
-        in: "body"
-        description: "id of the starting exam"
-        required: true
-        example: "5acdac93734d1d55c319d2c4"
+        schema:
+          $ref: "#/definitions/CreateResultRequest"
       responses:
         200:
           description: "successful operation"
@@ -333,6 +329,24 @@ definitions:
           $ref: "#/definitions/Question"
     xml:
       name: "Result"
+
+  CreateResultRequest:
+    type: "object"
+    properties:
+      studentId:
+        type: "string"
+        format: "hexadecimal"
+        description: "student id of the student who just starts the exam"
+        example: "5ad289124c9956964c868f2b"
+        required: true
+      examId:
+        type: "string"
+        format: "hexadecimal"
+        description: "exam id of the exam which is just starting"
+        example: "5acdac93734d1d55c319d2c4"
+        required: true
+    xml:
+      name: "CreateResultRequest"
 
   Question:
     type: "object"
