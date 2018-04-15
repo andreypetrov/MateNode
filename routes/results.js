@@ -5,37 +5,6 @@ const Exam = require('../model/exam');
 
 const router = express.Router();
 
-/**
- * Create a new result for a given student and a given exam (use studentId and examId)
- */
-router.post('/', function (req, res, next) {
-    if (!req.body.studentId || !req.body.examId) return res.status(400).send("Please provide studentId and examId");
-
-    let student;
-    let exam;
-
-    Student.findById(req.body.studentId).then(function (studentFromDb) {
-        student = studentFromDb;
-        return Exam.findById(req.body.examId);
-    }).then(function (examFromDb) {
-        exam = examFromDb;
-    }).then(function () {
-        return Result.create(createResult(student, exam));
-    }).then(function (result) {
-        return res.status(200).send(result);
-    }).catch(next);
-
-});
-
-const createResult = function (student, exam) {
-    return {
-        student: student,
-        exam: exam,
-        questions: exam.questions,
-        dateStarted: Date.now()
-    };
-};
-
 
 /**
  * GET results. Optionally filter by examId, studentId, studentName, examSubjectCode, examVariant
@@ -71,6 +40,37 @@ const createDbQueryFromRequest = function (req) {
     return query;
 };
 
+
+/**
+ * Create a new result for a given student and a given exam (use studentId and examId)
+ */
+router.post('/', function (req, res, next) {
+    if (!req.body.studentId || !req.body.examId) return res.status(400).send("Please provide studentId and examId");
+
+    let student;
+    let exam;
+
+    Student.findById(req.body.studentId).then(function (studentFromDb) {
+        student = studentFromDb;
+        return Exam.findById(req.body.examId);
+    }).then(function (examFromDb) {
+        exam = examFromDb;
+    }).then(function () {
+        return Result.create(createResult(student, exam));
+    }).then(function (result) {
+        return res.status(200).send(result);
+    }).catch(next);
+
+});
+
+const createResult = function (student, exam) {
+    return {
+        student: student,
+        exam: exam,
+        questions: exam.questions,
+        dateStarted: Date.now()
+    };
+};
 
 /**
  * GET a result by result id

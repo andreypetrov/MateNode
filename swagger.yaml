@@ -67,6 +67,7 @@ paths:
         required: true
         type: "string"
         format: "hexadecimal"
+        example: "5ad289124c9956964c868f2b"
       responses:
         200:
           description: "successful operation"
@@ -95,21 +96,21 @@ paths:
     get:
      tags:
      - "exams"
-     summary: "Get list of all exams"
+     summary: "Get list of exams. Optionally you can filter by subjectCode and variant"
      operationId: "getExams"
      produces:
      - "application/json"
      parameters:
      - name: "subjectCode"
        in: "query"
-       description: "The sunject code of the exam"
+       description: "The subject code of the exam"
        type: "string"
        example: "01"
-     - name: "password"
+     - name: "variant"
        in: "query"
-       description: "The password for login in clear text"
-       required: true
+       description: "The variant of the exam on the given subject"
        type: "string"
+       example: "Б"
      responses:
        200:
          description: "successful operation"
@@ -153,6 +154,7 @@ paths:
         required: true
         type: "string"
         format: "hexadecimal"
+        example: "5acdac93734d1d55c319d2c4"
       responses:
         200:
           description: "successful operation"
@@ -177,6 +179,54 @@ paths:
           description: "successful operation"
           schema:
             type: "string"
+  /results:
+    get:
+     tags:
+     - "exams"
+     summary: "Get list of exams. Optionally you can filter by subjectCode and variant"
+     operationId: "getExams"
+     produces:
+     - "application/json"
+     parameters:
+     - name: "subjectCode"
+       in: "query"
+       description: "The subject code of the exam"
+       type: "string"
+       example: "01"
+     - name: "variant"
+       in: "query"
+       description: "The variant of the exam on the given subject"
+       type: "string"
+       example: "Б"
+     responses:
+       200:
+         description: "successful operation"
+         schema:
+           type: "array"
+           items:
+             $ref: "#/definitions/Exam"
+    post:
+     tags:
+     - "exams"
+     summary: "Create a new exam"
+     operationId: "createExam"
+     consumes:
+     - "application/json"
+     produces:
+     - "application/json"
+     parameters:
+     - name: "body"
+       in: "body"
+       description: "Exam object that needs to be created. _id does not need to be provided. If not provided it will be generated server side and returned in the response."
+       required: true
+       schema:
+         $ref: "#/definitions/Exam"
+     responses:
+           200:
+             description: "successful operation"
+             schema:
+               $ref: "#/definitions/Exam"
+
 
 definitions:
   Student:
