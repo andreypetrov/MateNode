@@ -2,7 +2,13 @@ swagger: "2.0"
 info:
   version: "1.0.0"
   title: "Mate Exam API"
-  description: "A simple API to give test exams to students"
+  description: "A simple API to give test exams to students.
+  Flow for an exam is like so:
+  1. Pick a student.
+  2. Pick an exam.
+  3. Create result for chosen student and exam.
+  4. Answer questions.
+  5. Finish result."
 host: "agentmate.herokuapp.com"
 basePath: "/api/v1"
 tags:
@@ -31,6 +37,27 @@ paths:
             type: "array"
             items:
               $ref: "#/definitions/Student"
+    post:
+      tags:
+      - "students"
+      summary: "Create a new student"
+      operationId: "createStudent"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "body"
+        in: "body"
+        description: "Student object that needs to be created. _id does not need to be provided. If not provided it will be generated server side and returned in the response."
+        required: true
+        schema:
+          $ref: "#/definitions/Student"
+      responses:
+            200:
+              description: "successful operation"
+              schema:
+                $ref: "#/definitions/Student"
   /students/{id}:
     get:
       tags:
@@ -44,19 +71,269 @@ paths:
         in: "path"
         description: "ID of student to return"
         required: true
-        type: "hexadecimal"
-    responses:
-      200:
-        description: "successful operation"
+        type: "string"
+        format: "hexadecimal"
+        example: "5ad289124c9956964c868f2b"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Student"
+    delete:
+      tags:
+      - "students"
+      summary: "Delete a student by id"
+      operationId: "deleteStudentById"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of student to delete"
+        required: true
+        type: "string"
+        format: "hexadecimal"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "string"
+  /exams:
+    get:
+     tags:
+     - "exams"
+     summary: "Get list of exams. Optionally filter by subjectCode and variant"
+     operationId: "getExams"
+     produces:
+     - "application/json"
+     parameters:
+     - name: "subjectCode"
+       in: "query"
+       description: "The subject code of the exam"
+       type: "string"
+       example: "01"
+     - name: "variant"
+       in: "query"
+       description: "The variant of the exam on the given subject"
+       type: "string"
+       example: "Б"
+     responses:
+       200:
+         description: "successful operation"
+         schema:
+           type: "array"
+           items:
+             $ref: "#/definitions/Exam"
+    post:
+     tags:
+     - "exams"
+     summary: "Create a new exam"
+     operationId: "createExam"
+     consumes:
+     - "application/json"
+     produces:
+     - "application/json"
+     parameters:
+     - name: "body"
+       in: "body"
+       description: "Exam object that needs to be created. _id does not need to be provided. If not provided it will be generated server side and returned in the response."
+       required: true
+       schema:
+         $ref: "#/definitions/Exam"
+     responses:
+       200:
+         description: "successful operation"
+         schema:
+           $ref: "#/definitions/Exam"
+  /exams/{id}:
+    get:
+      tags:
+      - "exams"
+      summary: "Get an exam by id"
+      operationId: "getExamById"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of exam to return"
+        required: true
+        type: "string"
+        format: "hexadecimal"
+        example: "5acdac93734d1d55c319d2c4"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Exam"
+    delete:
+      tags:
+      - "exams"
+      summary: "Delete a exam by id"
+      operationId: "deleteExamById"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of exam to delete"
+        required: true
+        type: "string"
+        format: "hexadecimal"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "string"
+  /results:
+    get:
+      tags:
+      - "results"
+      summary: "Get list of results. Optionally filter by examId, studentId, studentName, examSubjectCode, and examVariant"
+      operationId: "getResults"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "examSubjectCode"
+        in: "query"
+        description: "The subject code of the exam"
+        type: "string"
+        example: "01"
+      - name: "examVariant"
+        in: "query"
+        description: "The variant of the exam on the given subject"
+        type: "string"
+        example: "Б"
+      - name: "examId"
+        in: "query"
+        description: "The id of the exam"
+        type: "string"
+        example: "5acdac93734d1d55c319d2c4"
+      - name: "studentId"
+        in: "query"
+        description: "The id of the student who is taking the exam and who this result record belongs to"
+        type: "string"
+        example: "5ad289124c9956964c868f2b"
+      - name: "studentName"
+        in: "query"
+        description: "The name of the student who is taking the exam and who this result record belongs to"
+        type: "string"
+        example: "Дядо Мраз"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Result"
+    post:
+      tags:
+      - "results"
+      summary: "Create a new result and timestamp the moment the exam started"
+      operationId: "createResult"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "body"
+        in: "body"
+        description: "id of student and id of exam"
+        required: true
         schema:
-          $ref: "#/definitions/Student"
-
-
-
-
+          $ref: "#/definitions/StartResultRequest"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Result"
+  /results/{id}:
+    get:
+      tags:
+      - "results"
+      summary: "Get a result by id"
+      operationId: "getResultById"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of result to return"
+        required: true
+        type: "string"
+        format: "hexadecimal"
+        example: "5ad27e8f3b8fbd97a8750c76"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Result"
+    delete:
+      tags:
+      - "results"
+      summary: "Delete a result by id"
+      operationId: "deleteResultById"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of result to delete"
+        required: true
+        type: "string"
+        format: "hexadecimal"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "string"
+  /results/answer:
+    post:
+      tags:
+      - "results"
+      summary: "Answer a question from the exam and record it in the result record"
+      operationId: "giveAnswerInResult"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "body"
+        in: "body"
+        description: "id of result, id of question asked and id of answer given"
+        required: true
+        schema:
+          $ref: "#/definitions/AnswerRequest"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Result"
+  /results/finish:
+    post:
+      tags:
+      - "results"
+      summary: "Finish exam and close result record (i.e. timestamp and score it)"
+      operationId: "giveAnswerInResult"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "body"
+        in: "body"
+        description: "id of result to be finished. This means exam  for this student is over."
+        required: true
+        schema:
+          $ref: "#/definitions/FinishResultRequest"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/FinishResultRequest"
 
 definitions:
- Student:
+  Student:
     type: "object"
     properties:
       _id:
@@ -64,6 +341,7 @@ definitions:
         format: "hexadecimal"
         description: "mLab generated mongodb field"
         example: "12312d1231b"
+        required: false
       name:
         type: "string"
         format: "First Middle Last"
@@ -77,3 +355,170 @@ definitions:
         example: "ул. Възрожденска 1А, Пловдив, 4000"
     xml:
       name: "Student"
+
+  Exam:
+    type: "object"
+    properties:
+      _id:
+        type: "string"
+        format: "hexadecimal"
+        description: "mLab generated mongodb field"
+        example: "12312d1231a"
+        required: false
+      subjectCode:
+        type: "string"
+        format: "integer"
+        description: "short code of the studied subject"
+        example: "01"
+      subjectName:
+        type: "string"
+        description: "name of the studied subject"
+        example: "Правилник за движение по пътишата"
+      variant:
+        type: "string"
+        description: "A different exam variant usually means a different subset of questions or reordered questions. Test variants are used to reduce risk of cheating and to focus on specific subject areas"
+        example: "Б"
+      map:
+        type: "object"
+        description: "TODO description, for now empty object"
+        example: {}
+      questions:
+        type: "array"
+        items:
+          $ref: "#/definitions/Question"
+    xml:
+      name: "Exam"
+
+  Result:
+    type: "object"
+    properties:
+      _id:
+        type: "string"
+        format: "hexadecimal"
+        description: "mLab generated mongodb field"
+        example: "5ad27e8f3b8fbd97a8750c76"
+        required: false
+      student:
+        $ref: "#/definitions/Student"
+      exam:
+        $ref: "#/definitions/Exam"
+      dateStarted:
+        type: "string"
+        format: "date-time"
+        description: "date-time in UTC/GMT at which the student started the exam i.e. the result document was created."
+        example: "2018-04-14T22:19:59.409Z"
+      dateFinished:
+        type: "string"
+        format: "date-time"
+        description: "date-time in UTC/GMT at which the student finished the exam i.e. the result document has been completed and final scoring has been calculated."
+        example: "2018-04-14T22:21:26.054Z"
+      questions:
+        type: "array"
+        items:
+          $ref: "#/definitions/Question"
+    xml:
+      name: "Result"
+
+  Question:
+    type: "object"
+    properties:
+      _id:
+        type: "string"
+        format: "usually a number"
+        example: "1"
+        required: false
+      text:
+        type: "string"
+        description: "The text of the actual question"
+        example: "Колко е дълга река Нил?"
+      imageUrl:
+        type: "url"
+        description: "url to an image if the question contains one"
+        example: "https://www.signsworldwide.com/images/thumbnails/450/448/detailed/4/STOP-sign.jpg"
+      correctAnswer:
+        type: "string"
+        description: "The id (usually letter) of the correct answer"
+        example: "в"
+      givenAnswer:
+        type: "string"
+        description: "The id (usually letter) of the given answer by the student. This is empty when part of exam but gets filled in when part of result."
+        example: "г"
+      answers:
+        type: "array"
+        items:
+          $ref: "#/definitions/Answer"
+    xml:
+      name: "Question"
+
+  Answer:
+    type: "object"
+    properties:
+      _id:
+        type: "string"
+        format: "usually a letter"
+        example: "б"
+        required: false
+      imageUrl:
+        type: "url"
+        description: "url to an image if the question contains one"
+        example: "https://bit.ly/2vf7S9R"
+      text:
+        type: "string"
+        description: "The text of the answer"
+        example: "Река нил е 2000КМ"
+    xml:
+      name: "Answer"
+
+  StartResultRequest:
+    type: "object"
+    properties:
+      studentId:
+        type: "string"
+        format: "hexadecimal"
+        description: "student id of the student who just starts the exam"
+        example: "5ad289124c9956964c868f2b"
+        required: true
+      examId:
+        type: "string"
+        format: "hexadecimal"
+        description: "exam id of the exam which is just starting"
+        example: "5acdac93734d1d55c319d2c4"
+        required: true
+    xml:
+      name: "StartResultRequest"
+
+  FinishResultRequest:
+    type: "object"
+    properties:
+      resultId:
+        type: "string"
+        format: "hexadecimal"
+        description: "id of the result record which is completed. It means the exam for that student is over"
+        example: "5ad27e8f3b8fbd97a8750c76"
+        required: true
+    xml:
+      name: "FinishResultRequest"
+
+  AnswerRequest:
+    type: "object"
+    properties:
+      resultId:
+        type: "string"
+        format: "hexadecimal"
+        description: "id of the result record in which we record the given answer"
+        example: "5ad27e8f3b8fbd97a8750c76"
+        required: true
+      questionId:
+        type: "string"
+        format: "integer"
+        description: "id of the question which is being answered"
+        example: "01"
+        required: true
+      answerId:
+        type: "string"
+        format: "usually a letter"
+        description: "id of the answer the student selected"
+        example: "б"
+        required: true
+    xml:
+      name: "Answer"

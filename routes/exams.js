@@ -38,4 +38,13 @@ router.delete('/:id', function (req, res, next) {
     }).catch(next);
 });
 
+/**
+ * GET an exam by id
+ */
+router.get('/:id', function (req, res, next) {
+    Exam.findById(req.params.id).then(function (exam) {
+        return res.status(200).send(exam);
+    }).catch(next);
+});
+
 module.exports = router;
