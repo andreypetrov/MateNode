@@ -2,7 +2,13 @@ swagger: "2.0"
 info:
   version: "1.0.0"
   title: "Mate Exam API"
-  description: "A simple API to give test exams to students"
+  description: "A simple API to give test exams to students.
+  Flow for an exam is like so:
+  1. Pick a student.
+  2. Pick an exam.
+  3. Create result for chosen student and exam.
+  4. Answer questions.
+  5. Finish result."
 host: "agentmate.herokuapp.com"
 basePath: "/api/v1"
 tags:
@@ -96,7 +102,7 @@ paths:
     get:
      tags:
      - "exams"
-     summary: "Get list of exams. Optionally you can filter by subjectCode and variant"
+     summary: "Get list of exams. Optionally filter by subjectCode and variant"
      operationId: "getExams"
      produces:
      - "application/json"
@@ -183,7 +189,7 @@ paths:
     get:
       tags:
       - "results"
-      summary: "Get list of results. Optionally filter by examId, studentId, studentName, examSubjectCode, examVariant"
+      summary: "Get list of results. Optionally filter by examId, studentId, studentName, examSubjectCode, and examVariant"
       operationId: "getResults"
       produces:
       - "application/json"
@@ -235,13 +241,96 @@ paths:
         description: "id of student and id of exam"
         required: true
         schema:
-          $ref: "#/definitions/CreateResultRequest"
+          $ref: "#/definitions/StartResultRequest"
       responses:
         200:
           description: "successful operation"
           schema:
             $ref: "#/definitions/Result"
-
+  /results/{id}:
+    get:
+      tags:
+      - "results"
+      summary: "Get a result by id"
+      operationId: "getResultById"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of result to return"
+        required: true
+        type: "string"
+        format: "hexadecimal"
+        example: "5ad27e8f3b8fbd97a8750c76"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Result"
+    delete:
+      tags:
+      - "results"
+      summary: "Delete a result by id"
+      operationId: "deleteResultById"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of result to delete"
+        required: true
+        type: "string"
+        format: "hexadecimal"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "string"
+  /results/answer:
+    post:
+      tags:
+      - "results"
+      summary: "Answer a question from the exam and record it in the result record"
+      operationId: "giveAnswerInResult"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "body"
+        in: "body"
+        description: "id of result, id of question asked and id of answer given"
+        required: true
+        schema:
+          $ref: "#/definitions/AnswerRequest"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Result"
+  /results/finish:
+    post:
+      tags:
+      - "results"
+      summary: "Finish exam and close result record (i.e. timestamp and score it)"
+      operationId: "giveAnswerInResult"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "body"
+        in: "body"
+        description: "id of result to be finished. This means exam  for this student is over."
+        required: true
+        schema:
+          $ref: "#/definitions/FinishResultRequest"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/FinishResultRequest"
 
 definitions:
   Student:
@@ -307,7 +396,7 @@ definitions:
         type: "string"
         format: "hexadecimal"
         description: "mLab generated mongodb field"
-        example: "12312d1231e"
+        example: "5ad27e8f3b8fbd97a8750c76"
         required: false
       student:
         $ref: "#/definitions/Student"
@@ -330,24 +419,6 @@ definitions:
     xml:
       name: "Result"
 
-  CreateResultRequest:
-    type: "object"
-    properties:
-      studentId:
-        type: "string"
-        format: "hexadecimal"
-        description: "student id of the student who just starts the exam"
-        example: "5ad289124c9956964c868f2b"
-        required: true
-      examId:
-        type: "string"
-        format: "hexadecimal"
-        description: "exam id of the exam which is just starting"
-        example: "5acdac93734d1d55c319d2c4"
-        required: true
-    xml:
-      name: "CreateResultRequest"
-
   Question:
     type: "object"
     properties:
@@ -360,13 +431,17 @@ definitions:
         type: "string"
         description: "The text of the actual question"
         example: "Колко е дълга река Нил?"
+      imageUrl:
+        type: "url"
+        description: "url to an image if the question contains one"
+        example: "https://www.signsworldwide.com/images/thumbnails/450/448/detailed/4/STOP-sign.jpg"
       correctAnswer:
         type: "string"
         description: "The id (usually letter) of the correct answer"
         example: "в"
       givenAnswer:
         type: "string"
-        description: "The id (usually letter) of the given answer by the student"
+        description: "The id (usually letter) of the given answer by the student. This is empty when part of exam but gets filled in when part of result."
         example: "г"
       answers:
         type: "array"
@@ -383,9 +458,67 @@ definitions:
         format: "usually a letter"
         example: "б"
         required: false
+      imageUrl:
+        type: "url"
+        description: "url to an image if the question contains one"
+        example: "https://bit.ly/2vf7S9R"
       text:
         type: "string"
         description: "The text of the answer"
         example: "Река нил е 2000КМ"
+    xml:
+      name: "Answer"
+
+  StartResultRequest:
+    type: "object"
+    properties:
+      studentId:
+        type: "string"
+        format: "hexadecimal"
+        description: "student id of the student who just starts the exam"
+        example: "5ad289124c9956964c868f2b"
+        required: true
+      examId:
+        type: "string"
+        format: "hexadecimal"
+        description: "exam id of the exam which is just starting"
+        example: "5acdac93734d1d55c319d2c4"
+        required: true
+    xml:
+      name: "StartResultRequest"
+
+  FinishResultRequest:
+    type: "object"
+    properties:
+      resultId:
+        type: "string"
+        format: "hexadecimal"
+        description: "id of the result record which is completed. It means the exam for that student is over"
+        example: "5ad27e8f3b8fbd97a8750c76"
+        required: true
+    xml:
+      name: "FinishResultRequest"
+
+  AnswerRequest:
+    type: "object"
+    properties:
+      resultId:
+        type: "string"
+        format: "hexadecimal"
+        description: "id of the result record in which we record the given answer"
+        example: "5ad27e8f3b8fbd97a8750c76"
+        required: true
+      questionId:
+        type: "string"
+        format: "integer"
+        description: "id of the question which is being answered"
+        example: "01"
+        required: true
+      answerId:
+        type: "string"
+        format: "usually a letter"
+        description: "id of the answer the student selected"
+        example: "б"
+        required: true
     xml:
       name: "Answer"
