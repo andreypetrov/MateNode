@@ -3,9 +3,6 @@
     <envs>
       <env name="DEBUG" value="MateNode:*" />
     </envs>
-    <EXTENSION ID="com.jetbrains.nodejs.run.NodeJSStartBrowserRunConfigurationExtension">
-      <browser url="http://localhost:3000/" />
-    </EXTENSION>
     <method />
   </configuration>
 </component>
