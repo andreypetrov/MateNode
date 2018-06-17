@@ -1,6 +1,7 @@
 # Mate Server
 
 > A Multi-Agent Testing Environment server side implementation
+
 For swagger documentation of the api open /api-docs
 
 ``` bash
