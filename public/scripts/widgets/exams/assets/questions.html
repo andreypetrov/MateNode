@@ -1,0 +1,53 @@
+    <div class="questions-list questions-container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="section-container">
+                    <table iterate="exams" class="table table-striped exams-table">
+                        <thead>
+                        <tr>
+                            <th colspan="4" class="section">
+                                <span>{{ subjectName }}</span>
+                                <span class="variant">Вариант {{ variant }}</span>
+                            </th>
+                        </tr>
+                        <tr>
+                            <th>ID</th>
+                            <th style="min-width: 140px;">Категория</th>
+                            <th>Въпрос</th>
+                            <th style="min-width: 500px;">Отговори</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr iterate="questions">
+                            <td>{{ _id }}</td>
+                            <td>{{ category }}</td>
+                            <td>
+                                <div class="question">
+                                    {{ text }}
+                                    <img class="question-image" src="{{ imageUrl }}"/>
+                                </div>
+                            </td>
+                            <td>
+                                <div iterate="answers">
+                                    <div class="{{ answerClass }}" >
+                                        <span>{{ _id }}) </span>{{ text }}
+                                    </div>
+                                </div>
+
+                            </td>
+                        </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+
+

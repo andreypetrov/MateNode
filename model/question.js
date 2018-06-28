@@ -7,7 +7,8 @@ const questionSchema = new mongoose.Schema({
     imageUrl: String,
     correctAnswer: String,
     answers:[answer.schema],
-    givenAnswer:String
+    givenAnswer:String,
+    category: String
 });
 
 mongoose.model('Question', questionSchema);
