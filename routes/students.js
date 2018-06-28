@@ -39,4 +39,13 @@ router.delete('/:id', function (req, res, next) {
     }).catch(next);
 });
 
+/**
+ * Update an student by given id
+ */
+router.put('/:id', function (req, res, next) {
+    Student.findOneAndUpdate({_id:req.params.id}, req.body, {new: true}).then(function(student){
+        res.status(200).send(student);
+    }).catch(next);
+});
+
 module.exports = router;
