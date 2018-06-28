@@ -47,4 +47,14 @@ router.get('/:id', function (req, res, next) {
     }).catch(next);
 });
 
+
+/**
+ * Update an exam by given id
+ */
+router.put('/:id', function (req, res, next) {
+    Exam.findOneAndUpdate({_id:req.params.id}, req.body, {new: true}).then(function(exam){
+        res.status(200).send(exam);
+    }).catch(next);
+});
+
 module.exports = router;

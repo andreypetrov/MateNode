@@ -169,7 +169,7 @@ paths:
     delete:
       tags:
       - "exams"
-      summary: "Delete a exam by id"
+      summary: "Delete an exam by id"
       operationId: "deleteExamById"
       produces:
       - "application/json"
@@ -185,6 +185,33 @@ paths:
           description: "successful operation"
           schema:
             type: "string"
+    put:
+      tags:
+      - "exams"
+      summary: "Update an exam by id"
+      operationId: "updateExamById"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        example: "5b352f1f58b835430c5c3921"
+        description: "ID of exam to update"
+        required: true
+        type: "string"
+        format: "hexadecimal"
+      - name: "body"
+        in: "body"
+        description: "body of exam to update."
+        required: true
+        schema:
+          $ref: "#/definitions/Exam"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Exam"
+
   /results:
     get:
       tags:
@@ -363,7 +390,7 @@ definitions:
         type: "string"
         format: "hexadecimal"
         description: "mLab generated mongodb field"
-        example: "12312d1231a"
+        example: "5b352f1f58b835430c5c3921"
         required: false
       subjectCode:
         type: "string"
