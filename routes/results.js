@@ -11,10 +11,16 @@ const router = express.Router();
  */
 router.get('/', function (req, res, next) {
     const query = createDbQueryFromRequest(req);
-    Result.find(query).then(function (result) {
+    const projection = createDbProjectionFromRequest(req);
+    Result.find(query).select(projection).then(function (result) {
         return res.status(200).send(result);
     }).catch(next);
 });
+
+
+const createDbProjectionFromRequest = function (req) {
+    return {'exam.map':0, 'exam.questions': 0};
+}
 
 const createDbQueryFromRequest = function (req) {
     let query = {};
@@ -36,6 +42,10 @@ const createDbQueryFromRequest = function (req) {
     }
     if (req.query.examVariant) {
         query['exam.variant'] = req.query.examVariant;
+    }
+
+    if (!req.query.includeUnfinished) {
+        query['dateFinished'] = { '$exists' : true };
     }
     return query;
 };
@@ -64,12 +74,16 @@ router.post('/', function (req, res, next) {
 });
 
 const createResult = function (student, exam) {
-    return {
+    const result = {
         student: student,
         exam: exam,
         questions: exam.questions,
         dateStarted: Date.now()
     };
+    //filter out unnecessary data
+    result.exam.map = null;
+    result.exam.questions = null;
+    return result;
 };
 
 /**
@@ -125,7 +139,7 @@ router.post('/answer', function (req, res, next) {
 const calculateScore = function (result) {
     const questionsCount = result.questions.length;
     const correctAnswersCount = result.questions.filter(question => question.givenAnswer === question.correctAnswer).length;
-    return correctAnswersCount + " out of " + questionsCount;
+    return correctAnswersCount + "/" + questionsCount;
 };
 
 module.exports = router;
