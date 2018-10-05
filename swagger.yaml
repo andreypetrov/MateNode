@@ -272,6 +272,11 @@ paths:
         description: "The name of the student who is taking the exam and who this result record belongs to"
         type: "string"
         example: "Дядо Мраз"
+      - name: "includeUnfinished"
+        in: "query"
+        description: "A flag whether to include not finished results, i.e. results for which /finish endpoint has not been called. Default value is false"
+        type: "boolean"
+        example: "false"
       responses:
         200:
           description: "successful operation"
